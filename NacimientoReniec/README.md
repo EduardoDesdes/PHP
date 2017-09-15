@@ -1,5 +1,6 @@
 # Verificador de Actas de Nacimiento (Perú)
-- Version 1.0
+
+##Version 1.0
 
 Verifica la fecha de nacimiento de una persona en un rango de años
 
