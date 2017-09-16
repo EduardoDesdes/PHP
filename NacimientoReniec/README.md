@@ -15,3 +15,7 @@ $aniof = Ultimo año del rango
 $galletita = Es la cookie necesaria para hacer las consultas. Por ahora debes colocarla manual mente haciendo una consulta de prueba en https://www.reniec.gob.pe/concer/concer.do , puedes usar Http Live Headers o HttpFox.
 
 * Con el tiempo se mejorará el programa para así solo se necesite de ingresar el nombre completo.
+
+## Version 1.1 (Actualización)
+
+El Script ya cuenta con parte grafica para mayor comodidad de ingreso de valores requeridos.
