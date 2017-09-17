@@ -2,12 +2,12 @@
     body {
   color: green;
   background-color: black;
-	}
+    }
 
  </style>
 
 <title>Actas de Nacimiento (Perú)</title>
-<h1><center>Actas de Nacimiento V 1.1</center></h1><br>
+<h1><center>Actas de Nacimiento V 1.2</center></h1><br>
 <h2><center>Coded by Desdes</center></h2><br>
 
 <form method="post">
@@ -21,10 +21,15 @@
 
 
 <?php
-error_reporting(E_ALL);
+//error_reporting(E_ALL); //Cuando programas
+error_reporting(0); //Cuando ya esta listo
 ini_set('display_errors', 1);
 
 ini_set('max_execution_time', 2400000);
+
+
+
+
 
 if (isset($_POST['apepat']) && isset($_POST['apemat']) && isset($_POST['nombre']) && isset($_POST['dia']) && isset($_POST['mes']) && isset($_POST['anioi']) && isset($_POST['aniof'])) {
     
@@ -44,23 +49,63 @@ if (isset($_POST['apepat']) && isset($_POST['apemat']) && isset($_POST['nombre']
     //$mes = "06";
     //$anioi = "1940";
     //$aniof = "1980";
-    $galletita = "JSESSIONID=4e9ce39fc28d8ac3a64c0033097af442c24e03fbb3259ead31120c5d8f3cce85.e34Mb3uKahmMai0Mah8SbxuTa3uQe0";
+    $galletita = cookie();
     
     
     echo "<center>Sujeto Investigado: ";
     
     echo chr(ord($apepat) - 32) . substr($apepat, 1) . " " . chr(ord($apemat) - 32) . substr($apemat, 1) . " " . chr(ord($nombre) - 32) . substr($nombre, 1) . "</center></br>";
     
+    ini($galletita);
     
+    $r = 0;
+    $f = 0;
+
     for ($anio = $anioi; $anio <= $aniof; $anio++) {
         
-        echo Val($apepat, $apemat, $nombre, $dia, $mes, $anio, $galletita);
+        $r = Val($apepat, $apemat, $nombre, $dia, $mes, $anio, $galletita);
+        if($r == 1){
+            $f = 1;
+        }
         
     }
+    if ($f == 0){
+        echo "<center>No se encontró resultados.</center>";
+    }    
+    
 }
-function Val($apepat, $apemat, $nombre, $dia, $mes, $anio, $galletita)
+
+function ini($galletita)
 {
     
+    $data = array(
+        'accion' => 'continuar',
+        'etapa' => '3',
+        'etapaAux' => '2',
+        'caso' => '',
+        'tipActa' => '01',
+        'bot_prot_continuar11.x' => '88',
+        'bot_prot_continuar11.y' => '27'
+    );
+    
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://www.reniec.gob.pe/concer/concer.do");
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+    curl_setopt($ch, CURLOPT_COOKIE, $galletita);
+    $content2 = curl_exec($ch);
+    curl_close($ch);
+}
+
+function Val($apepat, $apemat, $nombre, $dia, $mes, $anio, $galletita)
+{
+    $c = 0;
     $data = array(
         'accion' => 'continuar',
         'etapa' => '5',
@@ -94,7 +139,29 @@ function Val($apepat, $apemat, $nombre, $dia, $mes, $anio, $galletita)
     //echo $content;
     if (strpos($content, "encontr&oacute;") > 0) {
         echo "<center>El Nacimiento es el $dia / $mes / $anio </center>";
+        $c = 1;
     }
+    return $c;
+}
+
+function cookie(){
+
+$url = 'https://www.reniec.gob.pe/concer/concer.do';
+
+$h = get_headers($url);
+$c = $h["4"];
+
+for ($i = 0; $i <= strlen($c); $i++){
+
+    if ($c[$i] == " "){
+        $c[$i] = ";";
+    }
+}
+
+$porciones = explode(";", $c);
+
+return $porciones[1];
+
 }
 
 ?>
